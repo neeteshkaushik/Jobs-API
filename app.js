@@ -15,6 +15,11 @@ const helmet = require("helmet");
 const rateLimiter = require("express-rate-limit");
 const port = process.env.PORT || 3000;
 
+//swagger implemantaion
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");
+
 app.use(express.json());
 
 //sercurity middlewares
@@ -32,8 +37,9 @@ app.use(xss());
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send("Jobs API");
+  res.send('<h1>Jobs API</h1> <a href="/api-docs">Swagger docs</a>');
 });
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //auth routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/jobs", auth, jobsRoter);
